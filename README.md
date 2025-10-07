@@ -1,1 +1,1 @@
-# qtcablelosscalc
+# qtcoaxcablelosscalc
