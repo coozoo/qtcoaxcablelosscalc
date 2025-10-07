@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Categories=Electronics;
+Name=qtcoaxcablelosscalc
+Exec=qtcoaxcablelosscalc %F
+Icon=qtcoaxcablelosscalc
+Comment=QT Coaxial Cable Loss Calculator
+Name[en_US]=QT Coaxial Cable Loss Calculator
