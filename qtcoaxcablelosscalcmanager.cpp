@@ -332,7 +332,9 @@ void QtCoaxCableLossCalcManager::addCableToPlot(CableWidget *cableWidget)
     QCPGraph *graph = m_plot->addGraph();
     graph->setName(cableWidget->getModel()->getName());
     QPen pen;
-    pen.setColor(QColor::fromHsv(QRandomGenerator::global()->bounded(360), 200, 200));
+    //pen.setColor(QColor::fromHsv(QRandomGenerator::global()->bounded(360),200, 200));
+    pen.setColor(uniColor[m_nextColorIndex]);
+    m_nextColorIndex = (m_nextColorIndex + 1) % uniColor.size();
     pen.setWidth(2);
     graph->setPen(pen);
 

@@ -73,6 +73,11 @@ private:
 
     QCPItemStraightLine *m_frequencyLine;
     QMap<QCPGraph *, QCPItemTracer *> m_extrapolationTracers;
+
+    QList<QColor> uniColor={ QColor(40,110,255),  QColor(0,183,48),    QColor(255,0,0),
+                              QColor(0,128,64),    QColor(255,200,20),  QColor(0,155,175),
+                              QColor(145,0,140),   QColor(205,125,0),   QColor(0,0,0)};
+    int m_nextColorIndex = 0;
 };
 
 #endif // QTCOAXCABLELOSSCALCMANAGER_H

@@ -4,14 +4,14 @@
 #include <QObject>
 #include <QJsonObject>
 #include <QString>
-#include <vector>
-#include "spline.h"
+
 
 class CableModel : public QObject
 {
     Q_OBJECT
 public:
     explicit CableModel(const QJsonObject &jsonData, QObject *parent = nullptr);
+    ~CableModel();
 
     QString getName() const;
     QString getManufacturer() const;
@@ -20,7 +20,6 @@ public:
     QJsonObject getAdditionalInfo() const;
 
     double getAttenuationPer100m(double frequencyMHz) const;
-    // New method to check for extrapolation
     double getMaxFrequency() const;
 
 private:
@@ -32,9 +31,9 @@ private:
     QString m_dataSource;
     QJsonObject m_additionalInfo;
 
-    tk::spline m_spline;
+    void* m_spline;
     bool m_splineValid = false;
-    double m_maxFrequency = 0.0; // Store the max known frequency
+    double m_maxFrequency = 0.0;
 };
 
 #endif // CABLEMODEL_H

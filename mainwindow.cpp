@@ -33,17 +33,15 @@ void MainWindow::setupFrequencyControls()
     ui->endFreq_doubleSpinBox->setSingleStep(0.001);
     ui->endFreq_doubleSpinBox->setRange(0.001, 10000.0);
 
-    // Configure the new current frequency spinbox
     ui->currentFreq_doubleSpinBox->setDecimals(3);
     ui->currentFreq_doubleSpinBox->setSingleStep(0.001);
 
     ui->startFreq_doubleSpinBox->setValue(1.0);
-    ui->endFreq_doubleSpinBox->setValue(3000.0);
+    ui->endFreq_doubleSpinBox->setValue(6000.0);
 
     connect(ui->startFreq_doubleSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &MainWindow::onStartFreqChanged);
     connect(ui->endFreq_doubleSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &MainWindow::onEndFreqChanged);
 
-    // Connect both the slider and the new spinbox
     connect(ui->freq_horizontalSlider, &QSlider::valueChanged, this, &MainWindow::onSliderValueChanged);
     connect(ui->currentFreq_doubleSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &MainWindow::onCurrentFreqSpinBoxChanged);
 
