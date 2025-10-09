@@ -20,7 +20,7 @@ public:
     ~CableWidget();
 
     CableModel *getModel() const;
-    double getCurrentAttenuation() const;
+    double getCurrentAttenuation() const { return m_currentAttenuation; }
     bool isMarkedForDeletion() const;
 
     // This is the new function to enable/disable per-cable length editing

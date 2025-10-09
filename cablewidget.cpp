@@ -94,7 +94,7 @@ void CableWidget::populateTable()
         }
 
     // -- Data Source Row --
-    m_tableWidget->setItem(row, 0, new QTableWidgetItem("Data Source:"));
+    m_tableWidget->setItem(row, 0, new QTableWidgetItem("Datasheet:"));
     QLabel *dataSourceLabel = new QLabel(QString("<a href=\"%1\">Link</a>").arg(m_model->getDataSource()), this);
     dataSourceLabel->setOpenExternalLinks(true);
     m_tableWidget->setCellWidget(row++, 1, dataSourceLabel);
@@ -106,7 +106,7 @@ void CableWidget::populateTable()
         {
             totalHeight += m_tableWidget->rowHeight(i);
         }
-    totalHeight += 2 * m_tableWidget->frameWidth(); // Account for border
+    totalHeight += 2 * m_tableWidget->frameWidth();
     m_tableWidget->setMinimumHeight(totalHeight);
     m_tableWidget->setMaximumHeight(totalHeight);
 }
@@ -117,7 +117,7 @@ void CableWidget::setLengthEditable(bool editable)
 }
 
 CableModel *CableWidget::getModel() const { return m_model; }
-double CableWidget::getCurrentAttenuation() const { return m_currentAttenuation; }
+
 bool CableWidget::isMarkedForDeletion() const { return m_deleteCheckBox->isChecked(); }
 
 void CableWidget::setFrequency(double frequencyMHz)

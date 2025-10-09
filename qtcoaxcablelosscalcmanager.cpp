@@ -226,6 +226,16 @@ void QtCoaxCableLossCalcManager::updateTracers()
                 {
                     tracer->setGraph(graph);
                     tracer->setGraphKey(currentFreq);
+                    tracer->setPen(QPen(QColor("darkorange")));
+                    tracer->setBrush(QBrush(QColor("darkorange")));
+                    tracer->setVisible(true);
+                }
+            else if (model && model->getMinFrequency() > 0 && currentFreq < model->getMinFrequency())
+                {
+                    tracer->setGraph(graph);
+                    tracer->setGraphKey(currentFreq);
+                    tracer->setPen(QPen(QColor("lightblue")));
+                    tracer->setBrush(QBrush(QColor("lightblue")));
                     tracer->setVisible(true);
                 }
             else
