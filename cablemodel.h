@@ -13,14 +13,15 @@ public:
     explicit CableModel(const QJsonObject &jsonData, QObject *parent = nullptr);
     ~CableModel();
 
-    QString getName() const;
-    QString getManufacturer() const;
-    QString getType() const;
-    QString getDataSource() const;
-    QJsonObject getAdditionalInfo() const;
+    QString getName() const { return m_name; }
+    QString getManufacturer() const { return m_manufacturer; }
+    QString getType() const { return m_type; }
+    QString getDataSource() const { return m_dataSource; }
+    QJsonObject getAdditionalInfo() const { return m_additionalInfo; }
+    double getMaxFrequency() const { return m_maxFrequency; }
+    double getMinFrequency() const { return m_minFrequency; }
 
     double getAttenuationPer100m(double frequencyMHz) const;
-    double getMaxFrequency() const;
 
 private:
     void setupSpline(const QJsonObject &attenuationData);
@@ -34,6 +35,7 @@ private:
     void* m_spline;
     bool m_splineValid = false;
     double m_maxFrequency = 0.0;
+    double m_minFrequency = 0.0;
 };
 
 #endif // CABLEMODEL_H

@@ -238,13 +238,9 @@ void QtCoaxCableLossCalcManager::updateTracers()
 void QtCoaxCableLossCalcManager::setGlobalLength(double lengthM)
 {
     m_globalLength = lengthM;
-    // Only apply global length if individual editing is off
-    if (!m_individualLengthAllowed)
+    for (CableWidget *widget : m_activeCableWidgets)
         {
-            for (CableWidget *widget : m_activeCableWidgets)
-                {
-                    widget->setLength(lengthM);
-                }
+            widget->setLength(lengthM);
         }
 }
 
@@ -374,13 +370,12 @@ void QtCoaxCableLossCalcManager::removeCableFromPlot(CableWidget *cableWidget)
 
 void QtCoaxCableLossCalcManager::updateGrid()
 {
-    QLayoutItem *item;
-    while ((item = m_cableWidgetsLayout->takeAt(0)) != nullptr)
+     while (QLayoutItem *item = m_cableWidgetsLayout->takeAt(0))
         {
-            // Just remove from layout, don't delete the widget
+            delete item;
         }
 
-    int widgetWidth = 350;
+    int widgetWidth = 250;
     int scrollAreaWidth = m_scrollArea->viewport()->width();
     int columnCount = qMax(1, scrollAreaWidth / (widgetWidth + m_cableWidgetsLayout->horizontalSpacing()));
 

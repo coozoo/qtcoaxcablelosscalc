@@ -26,12 +26,7 @@ CableModel::~CableModel()
     delete static_cast<tk::spline*>(m_spline);
 }
 
-QString CableModel::getName() const { return m_name; }
-QString CableModel::getManufacturer() const { return m_manufacturer; }
-QString CableModel::getType() const { return m_type; }
-QString CableModel::getDataSource() const { return m_dataSource; }
-QJsonObject CableModel::getAdditionalInfo() const { return m_additionalInfo; }
-double CableModel::getMaxFrequency() const { return m_maxFrequency; }
+
 
 double CableModel::getAttenuationPer100m(double frequencyMHz) const
 {
@@ -86,7 +81,7 @@ void CableModel::setupSpline(const QJsonObject &attenuationData)
         losses.push_back(p.second);
     }
 
-    // Store the max frequency
+    m_minFrequency = freqs.at(1);
     m_maxFrequency = freqs.back();
 
     static_cast<tk::spline*>(m_spline)->set_points(freqs, losses, tk::spline::cspline);

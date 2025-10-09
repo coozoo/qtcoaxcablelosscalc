@@ -55,7 +55,6 @@ void CableWidget::setupUi()
     m_tableWidget->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
     m_tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
-    // FIX: Disable scrollbars
     m_tableWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     m_tableWidget->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
@@ -102,7 +101,6 @@ void CableWidget::populateTable()
 
     m_tableWidget->resizeRowsToContents();
 
-    // FIX: Calculate and set the table's height to prevent scrolling
     int totalHeight = 0;
     for (int i = 0; i < m_tableWidget->rowCount(); ++i)
         {
@@ -150,12 +148,19 @@ void CableWidget::updateCalculatedValues()
             m_lossValueItem->setText(QString::number(m_currentAttenuation, 'f', 2) + " dB");
 
             double maxDataFreq = m_model->getMaxFrequency();
+            double minDataFreq = m_model->getMinFrequency();
             if (maxDataFreq > 0 && m_currentFrequency > maxDataFreq)
                 {
                     m_lossValueItem->setBackground(QColor("darkorange"));
                     m_lossValueItem->setForeground(Qt::white);
-                    m_lossValueItem->setToolTip(QString("Warning: This value is extrapolated beyond the cable's max data frequency of %1 MHz.").arg(maxDataFreq));
+                    m_lossValueItem->setToolTip(QString("Warning: This value is extrapolated\nbeyond the cable's max data frequency of %1 MHz.").arg(maxDataFreq));
                 }
+            else if (minDataFreq > 0 && m_currentFrequency < minDataFreq)
+            {
+                m_lossValueItem->setBackground(QColor("lightblue"));
+                m_lossValueItem->setForeground(Qt::black);
+                m_lossValueItem->setToolTip(QString("Warning: This value is extrapolated\nbeyond the cable's min data frequency of %1 MHz.").arg(minDataFreq));
+            }
             else
                 {
                     m_lossValueItem->setBackground(Qt::white);

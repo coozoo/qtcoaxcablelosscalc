@@ -58,8 +58,6 @@ void MainWindow::onSliderValueChanged(int value)
 {
     double frequencyMHz = static_cast<double>(value) / 1000.0;
     m_manager->setFrequency(frequencyMHz);
-
-    // Update the spinbox, blocking signals to prevent a loop
     ui->currentFreq_doubleSpinBox->blockSignals(true);
     ui->currentFreq_doubleSpinBox->setValue(frequencyMHz);
     ui->currentFreq_doubleSpinBox->blockSignals(false);
@@ -67,10 +65,7 @@ void MainWindow::onSliderValueChanged(int value)
 
 void MainWindow::onCurrentFreqSpinBoxChanged(double value)
 {
-    // Update the manager with the new frequency
     m_manager->setFrequency(value);
-
-    // Update the slider, blocking signals to prevent a loop
     int sliderValue = static_cast<int>(value * 1000);
     ui->freq_horizontalSlider->blockSignals(true);
     ui->freq_horizontalSlider->setValue(sliderValue);
