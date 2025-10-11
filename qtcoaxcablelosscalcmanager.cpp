@@ -83,7 +83,27 @@ void QtCoaxCableLossCalcManager::setupUi()
 
 void QtCoaxCableLossCalcManager::loadCablesFromJson()
 {
-    QFile file(":/cables.json");
+    QString configpath = "";
+#ifdef Q_OS_WIN
+    configpath = qApp->applicationDirPath();
+#endif
+#if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+    configpath = QStandardPaths::standardLocations(QStandardPaths::ConfigLocation)[0] + "/" + qAppName();
+#endif
+    const QString overrideFilePath = configpath + "/cables.json";
+    const QString resourceFilePath = ":/cables.json";
+    QFile file;
+
+    if (QFileInfo::exists(overrideFilePath))
+    {
+        qDebug()<<"Loading cables override:"<<overrideFilePath;
+        file.setFileName(overrideFilePath);
+    }
+    else
+    {
+        qDebug()<<"Loading default cables:"<<resourceFilePath;
+        file.setFileName(resourceFilePath);
+    }
     if (!file.open(QIODevice::ReadOnly))
         {
             qWarning()<<"Could not open cables.json from resources!";
