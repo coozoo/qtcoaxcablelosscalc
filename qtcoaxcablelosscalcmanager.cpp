@@ -53,10 +53,18 @@ void QtCoaxCableLossCalcManager::setupUi()
     m_deleteButton = new QPushButton("Delete Marked", this);
     connect(m_deleteButton, &QPushButton::clicked, this, &QtCoaxCableLossCalcManager::onDeleteMarkedClicked);
 
+    m_clearAllButton = new QToolButton(this);
+    m_clearAllButton->setToolTip(tr("Clear All"));
+    m_clearAllButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    m_clearAllButton->setIcon(QIcon::fromTheme("process-stop",QIcon(":/images/process-stop.svg")));
+    connect(m_clearAllButton, &QToolButton::clicked, this, &QtCoaxCableLossCalcManager::onClearAllClicked);
+
+
     controlLayout->addWidget(m_searchEdit, 1);
     controlLayout->addWidget(m_cableComboBox, 2);
     controlLayout->addWidget(m_addButton);
     controlLayout->addWidget(m_deleteButton);
+    controlLayout->addWidget(m_clearAllButton);
     controlLayout->addStretch();
     m_mainLayout->addLayout(controlLayout);
 
@@ -279,6 +287,14 @@ void QtCoaxCableLossCalcManager::onAddCableClicked()
     QString cableName = m_cableComboBox->currentText();
     if (m_cableModels.contains(cableName))
         {
+            for (CableWidget *widget : m_activeCableWidgets)
+            {
+                if(!m_allowCableDupes && widget->getModel()->getName()==cableName)
+                {
+                    QMessageBox::warning(this, "Warning", "Already added!");
+                    return;
+                }
+            }
             CableModel *model = m_cableModels.value(cableName);
             CableWidget *widget = new CableWidget(model);
 
@@ -319,6 +335,18 @@ void QtCoaxCableLossCalcManager::onDeleteMarkedClicked()
             widget->deleteLater();
         }
 
+    updateGrid();
+    updateAttenuations();
+}
+
+void QtCoaxCableLossCalcManager::onClearAllClicked()
+{
+    for (CableWidget *widget : m_activeCableWidgets)
+    {
+        m_activeCableWidgets.removeAll(widget);
+        removeCableFromPlot(widget);
+        widget->deleteLater();
+    }
     updateGrid();
     updateAttenuations();
 }
