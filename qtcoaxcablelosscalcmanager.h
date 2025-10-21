@@ -29,8 +29,11 @@ public slots:
     void setFrequency(double frequencyMHz);
     void setGlobalLength(double lengthM);
     void setPlotRange(double lower, double upper);
-    // This is the new public property setter
     void setIndividualLengthAllowed(bool allowed);
+    void setAllowCableDupes(bool allowed)
+    {
+        m_allowCableDupes=allowed;
+    }
 
 signals:
     void totalAttenuationChanged(double totalDb);
@@ -57,7 +60,8 @@ private:
     QMap<QString, CableModel *> m_cableModels;
     QList<CableWidget *> m_activeCableWidgets;
     double m_globalLength = 1.0;
-    bool m_individualLengthAllowed = false; // The new property
+    bool m_individualLengthAllowed = false;
+    bool m_allowCableDupes = false;
 
     // UI Elements
     QVBoxLayout *m_mainLayout;

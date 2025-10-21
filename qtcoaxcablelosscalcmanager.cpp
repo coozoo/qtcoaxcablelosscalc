@@ -279,6 +279,14 @@ void QtCoaxCableLossCalcManager::onAddCableClicked()
     QString cableName = m_cableComboBox->currentText();
     if (m_cableModels.contains(cableName))
         {
+            for (CableWidget *widget : m_activeCableWidgets)
+            {
+                if(!m_allowCableDupes && widget->getModel()->getName()==cableName)
+                {
+                    QMessageBox::warning(this, "Warning", "Already added!");
+                    return;
+                }
+            }
             CableModel *model = m_cableModels.value(cableName);
             CableWidget *widget = new CableWidget(model);
 

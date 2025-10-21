@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_manager = new QtCoaxCableLossCalcManager(this);
     m_manager->setIndividualLengthAllowed(true);
+    //m_manager->setAllowCableDupes(true);
     ui->cableManager_groupBox->setLayout(new QVBoxLayout());
     ui->cableManager_groupBox->layout()->addWidget(m_manager);
 
