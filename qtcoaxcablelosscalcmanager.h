@@ -44,6 +44,7 @@ protected:
 private slots:
     void onAddCableClicked();
     void onDeleteMarkedClicked();
+    void onClearAllClicked();
     void onSearchTextChanged(const QString &text);
     void updateAttenuations();
     void replotGraphs();
@@ -69,6 +70,7 @@ private:
     QComboBox *m_cableComboBox;
     QPushButton *m_addButton;
     QPushButton *m_deleteButton;
+    QToolButton *m_clearAllButton;
     QScrollArea *m_scrollArea;
     QWidget *m_scrollAreaWidget;
     QGridLayout *m_cableWidgetsLayout;
