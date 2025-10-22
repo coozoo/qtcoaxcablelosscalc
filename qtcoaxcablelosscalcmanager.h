@@ -34,6 +34,7 @@ public slots:
     {
         m_allowCableDupes=allowed;
     }
+    void setSilentCableDupes(bool silent);
 
 signals:
     void totalAttenuationChanged(double totalDb);
@@ -46,6 +47,7 @@ private slots:
     void onDeleteMarkedClicked();
     void onClearAllClicked();
     void onSearchTextChanged(const QString &text);
+    void onCurrentCableIndexChanged(int);
     void updateAttenuations();
     void replotGraphs();
 
@@ -63,6 +65,7 @@ private:
     double m_globalLength = 1.0;
     bool m_individualLengthAllowed = false;
     bool m_allowCableDupes = false;
+    bool m_silentCableDupes = false;
 
     // UI Elements
     QVBoxLayout *m_mainLayout;
