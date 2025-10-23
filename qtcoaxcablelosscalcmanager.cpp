@@ -41,16 +41,17 @@ void QtCoaxCableLossCalcManager::setupUi()
     m_mainLayout = new QVBoxLayout(this);
     QHBoxLayout *controlLayout = new QHBoxLayout();
     m_searchEdit = new QLineEdit(this);
-    m_searchEdit->setPlaceholderText("Search for cable...");
+    m_searchEdit->setPlaceholderText(tr("Search for cable..."));
     connect(m_searchEdit, &QLineEdit::textChanged, this, &QtCoaxCableLossCalcManager::onSearchTextChanged);
 
     m_cableComboBox = new QComboBox(this);
     m_cableComboBox->setMinimumWidth(200);
 
-    m_addButton = new QPushButton("Add", this);
+    m_addButton = new QPushButton(tr("Add"), this);
+    m_addButton->setToolTip(tr("Add Cable"));
     connect(m_addButton, &QPushButton::clicked, this, &QtCoaxCableLossCalcManager::onAddCableClicked);
 
-    m_deleteButton = new QPushButton("Delete Marked", this);
+    m_deleteButton = new QPushButton(tr("Delete Marked"), this);
     connect(m_deleteButton, &QPushButton::clicked, this, &QtCoaxCableLossCalcManager::onDeleteMarkedClicked);
 
     m_clearAllButton = new QToolButton(this);
@@ -81,7 +82,7 @@ void QtCoaxCableLossCalcManager::setupUi()
     m_mainLayout->addWidget(m_scrollArea, 1);
 
     QHBoxLayout *totalLayout = new QHBoxLayout();
-    m_totalAttenuationLabel = new QLabel("Total Attenuation: 0.00 dB", this);
+    m_totalAttenuationLabel = new QLabel(tr("Total Attenuation: 0.00 dB"), this);
     m_totalAttenuationLabel->setStyleSheet("font-weight: bold; font-size: 14px;");
     totalLayout->addStretch();
     totalLayout->addWidget(m_totalAttenuationLabel);
@@ -140,10 +141,10 @@ void QtCoaxCableLossCalcManager::loadCablesFromJson()
 
 void QtCoaxCableLossCalcManager::setupPlot()
 {
-    m_plot->xAxis->setLabel("Frequency (MHz)");
-    m_plot->yAxis->setLabel("Attenuation (dB/100m)");
+    m_plot->xAxis->setLabel(tr("Frequency (MHz)"));
+    m_plot->yAxis->setLabel(tr("Attenuation (dB/100m)"));
     m_plot->setInteractions({});
-    m_plot->legend->setVisible(true);
+    m_plot->legend->setVisible(false);
 
     m_frequencyLine = new QCPItemStraightLine(m_plot);
     m_frequencyLine->setPen(QPen(Qt::red, 1, Qt::DashLine));
@@ -161,6 +162,12 @@ void QtCoaxCableLossCalcManager::resizeEvent(QResizeEvent *event)
 {
     QWidget::resizeEvent(event);
     updateGrid();
+}
+
+void QtCoaxCableLossCalcManager::setSilentCableDupes(bool silent)
+{
+    m_silentCableDupes=silent;
+    if(!m_allowCableDupes && m_silentCableDupes) connect(m_cableComboBox,&QComboBox::currentIndexChanged,this,&QtCoaxCableLossCalcManager::onCurrentCableIndexChanged);
 }
 
 void QtCoaxCableLossCalcManager::setPlotRange(double lower, double upper)
@@ -291,7 +298,7 @@ void QtCoaxCableLossCalcManager::onAddCableClicked()
             {
                 if(!m_allowCableDupes && widget->getModel()->getName()==cableName)
                 {
-                    QMessageBox::warning(this, "Warning", "Already added!");
+                    QMessageBox::warning(this, tr("Warning"), tr("Already added!"));
                     return;
                 }
             }
@@ -300,10 +307,8 @@ void QtCoaxCableLossCalcManager::onAddCableClicked()
 
             widget->setLengthEditable(m_individualLengthAllowed);
 
-            if (!m_individualLengthAllowed)
-                {
-                    widget->setLength(m_globalLength);
-                }
+
+            widget->setLength(m_globalLength);
 
             widget->setFrequency(m_frequencyLine->point1->key());
             connect(widget, &CableWidget::attenuationChanged, this, &QtCoaxCableLossCalcManager::updateAttenuations);
@@ -313,6 +318,9 @@ void QtCoaxCableLossCalcManager::onAddCableClicked()
             updateGrid();
             updateAttenuations();
         }
+    m_plot->legend->setVisible(m_activeCableWidgets.count() > 0);
+    m_plot->replot();
+    if(!m_allowCableDupes && m_silentCableDupes) onCurrentCableIndexChanged(0);
 }
 
 void QtCoaxCableLossCalcManager::onDeleteMarkedClicked()
@@ -334,19 +342,21 @@ void QtCoaxCableLossCalcManager::onDeleteMarkedClicked()
             removeCableFromPlot(widget);
             widget->deleteLater();
         }
-
+    (m_activeCableWidgets.count()==0)?m_plot->legend->setVisible(false):m_plot->legend->setVisible(true);
+    m_plot->replot();
     updateGrid();
     updateAttenuations();
 }
 
 void QtCoaxCableLossCalcManager::onClearAllClicked()
 {
+    m_plot->legend->setVisible(false);
     for (CableWidget *widget : m_activeCableWidgets)
     {
-        m_activeCableWidgets.removeAll(widget);
         removeCableFromPlot(widget);
         widget->deleteLater();
     }
+    m_activeCableWidgets.clear();
     updateGrid();
     updateAttenuations();
 }
@@ -455,4 +465,26 @@ void QtCoaxCableLossCalcManager::updateGrid()
 
     m_cableWidgetsLayout->setColumnStretch(m_cableWidgetsLayout->columnCount(), 1);
     m_cableWidgetsLayout->setRowStretch(m_cableWidgetsLayout->rowCount(), 1);
+}
+
+void QtCoaxCableLossCalcManager::onCurrentCableIndexChanged(int)
+{
+    QString cableName = m_cableComboBox->currentText();
+    if (m_cableModels.contains(cableName))
+    {
+        for (CableWidget *widget : m_activeCableWidgets)
+        {
+            if(!m_allowCableDupes && widget->getModel()->getName()==cableName)
+            {
+                m_addButton->setDisabled(true);
+                m_addButton->setToolTip(tr("Current Cable Already Added"));
+                return;
+            }
+            else
+            {
+                m_addButton->setDisabled(false);
+                m_addButton->setToolTip(tr("Add Cable"));
+            }
+        }
+    }
 }
