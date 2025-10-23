@@ -309,7 +309,6 @@ void QtCoaxCableLossCalcManager::onAddCableClicked()
 
 
             widget->setLength(m_globalLength);
-            //    }
 
             widget->setFrequency(m_frequencyLine->point1->key());
             connect(widget, &CableWidget::attenuationChanged, this, &QtCoaxCableLossCalcManager::updateAttenuations);
