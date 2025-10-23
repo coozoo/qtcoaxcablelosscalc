@@ -485,7 +485,6 @@ void QtCoaxCableLossCalcManager::onCurrentCableIndexChanged(int)
                 m_addButton->setDisabled(false);
                 m_addButton->setToolTip(tr("Add Cable"));
             }
-
         }
     }
 }
