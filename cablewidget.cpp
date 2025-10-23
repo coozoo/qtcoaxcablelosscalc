@@ -28,7 +28,7 @@ CableWidget::~CableWidget()
 
 void CableWidget::setupUi()
 {
-    this->setStyleSheet("QFrame { border: 1px solid #adadad; background-color: #f0f0f0; border-radius: 4px; }");
+    this->setStyleSheet("QFrame { border: 1px solid; border-radius: 4px; }");
     this->setFrameShape(QFrame::StyledPanel);
     this->setFrameShadow(QFrame::Raised);
     this->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed); // Allow horizontal stretch, but fixed vertical
@@ -67,36 +67,46 @@ void CableWidget::populateTable()
     m_tableWidget->setRowCount(m_model->getAdditionalInfo().count() + 3); // +3 for Length, Loss, and Source
 
     // -- Calculated Loss Row --
-    m_tableWidget->setItem(row, 0, new QTableWidgetItem("Calculated Loss:"));
-    m_lossValueItem = new QTableWidgetItem("0.00 dB");
+    m_tableWidget->setItem(row, 0, new QTableWidgetItem(tr("Calculated Loss:")));
+    m_lossValueItem = new QTableWidgetItem();
     m_tableWidget->setItem(row++, 1, m_lossValueItem);
 
     // -- Length Row --
-    m_tableWidget->setItem(row, 0, new QTableWidgetItem("Length:"));
+    m_tableWidget->setItem(row, 0, new QTableWidgetItem(tr("Length:")));
     m_lengthSpinBox = new QDoubleSpinBox(m_tableWidget);
     m_lengthSpinBox->setFrame(false);
     m_lengthSpinBox->setRange(0.01, 10000.0);
     m_lengthSpinBox->setDecimals(2);
     m_lengthSpinBox->setSingleStep(0.1);
-    m_lengthSpinBox->setSuffix(" m");
+    m_lengthSpinBox->setSuffix(" " + tr("m"));
     connect(m_lengthSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &CableWidget::setLength);
     m_tableWidget->setCellWidget(row++, 1, m_lengthSpinBox);
 
     // -- Dynamic Additional Info Rows --
     QJsonObject additionalInfo = m_model->getAdditionalInfo();
     for (auto it = additionalInfo.constBegin(); it != additionalInfo.constEnd(); ++it)
-        {
-            QString labelText = it.key();
+    {
+        QString labelText = it.key();
+
+        if(labelText.toLower() == "extdiameter(mm)")
+            labelText = tr("ExtDiameter(mm)");
+        else if(labelText.toLower() == "impedance")
+            labelText = tr("Impedance");
+        else if(labelText.toLower() == "velocity")
+            labelText = tr("Velocity");
+        else {
             labelText.replace('_', ' ');
-            labelText = labelText.replace(0, 1, labelText[0].toUpper()) + ":";
-            m_tableWidget->setItem(row, 0, new QTableWidgetItem(labelText));
-            m_tableWidget->setItem(row++, 1, new QTableWidgetItem(it.value().toVariant().toString()));
+            labelText = labelText.replace(0, 1, labelText[0].toUpper());
         }
+        m_tableWidget->setItem(row, 0, new QTableWidgetItem(labelText + ":"));
+        m_tableWidget->setItem(row++, 1, new QTableWidgetItem(it.value().toVariant().toString()));
+    }
 
     // -- Data Source Row --
-    m_tableWidget->setItem(row, 0, new QTableWidgetItem("Datasheet:"));
-    QLabel *dataSourceLabel = new QLabel(QString("<a href=\"%1\">Link</a>").arg(m_model->getDataSource()), this);
+    m_tableWidget->setItem(row, 0, new QTableWidgetItem(tr("Datasheet:")));
+        QLabel *dataSourceLabel = new QLabel(QString("<a href=\"%1\">%2</a>").arg(m_model->getDataSource(), tr("Link")), this);
     dataSourceLabel->setOpenExternalLinks(true);
+    dataSourceLabel->setStyleSheet("background: transparent; border: none;");
     m_tableWidget->setCellWidget(row++, 1, dataSourceLabel);
 
     m_tableWidget->resizeRowsToContents();
@@ -145,27 +155,27 @@ void CableWidget::updateCalculatedValues()
 
     if (m_lossValueItem)
         {
-            m_lossValueItem->setText(QString::number(m_currentAttenuation, 'f', 2) + " dB");
+            m_lossValueItem->setText(QString::number(m_currentAttenuation, 'f', 2) + " " + tr("dB"));
 
             double maxDataFreq = m_model->getMaxFrequency();
             double minDataFreq = m_model->getMinFrequency();
             if (maxDataFreq > 0 && m_currentFrequency > maxDataFreq)
                 {
                     m_lossValueItem->setBackground(QColor("darkorange"));
-                    m_lossValueItem->setForeground(Qt::white);
-                    m_lossValueItem->setToolTip(QString("Warning: This value is extrapolated\nbeyond the cable's max data frequency of %1 MHz.").arg(maxDataFreq));
+                    m_lossValueItem->setForeground(Qt::black);
+                    m_lossValueItem->setToolTip(tr("Warning: This value is extrapolated\nbeyond the cable's max data frequency of %1 MHz.").arg(maxDataFreq));
                 }
             else if (minDataFreq > 0 && m_currentFrequency < minDataFreq)
             {
                 m_lossValueItem->setBackground(QColor("lightblue"));
                 m_lossValueItem->setForeground(Qt::black);
-                m_lossValueItem->setToolTip(QString("Warning: This value is extrapolated\nbeyond the cable's min data frequency of %1 MHz.").arg(minDataFreq));
+                m_lossValueItem->setToolTip(tr("Warning: This value is extrapolated\nbeyond the cable's min data frequency of %1 MHz.").arg(minDataFreq));
             }
             else
                 {
                     m_lossValueItem->setBackground(Qt::white);
                     m_lossValueItem->setForeground(Qt::black);
-                    m_lossValueItem->setToolTip("");
+                    m_lossValueItem->setToolTip({});
                 }
         }
 

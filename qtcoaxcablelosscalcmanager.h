@@ -28,6 +28,8 @@ public:
     explicit QtCoaxCableLossCalcManager(QWidget *parent = nullptr);
     ~QtCoaxCableLossCalcManager();
 
+    void loadCablesFromJson(QString configPath);
+
 public slots:
     void setFrequency(double frequencyMHz);
     void setGlobalLength(double lengthM);
@@ -53,7 +55,6 @@ private slots:
 
 private:
     void setupUi();
-    void loadCablesFromJson();
     void setupPlot();
     void addCableToPlot(CableWidget *cableWidget);
     void removeCableFromPlot(CableWidget *cableWidget);

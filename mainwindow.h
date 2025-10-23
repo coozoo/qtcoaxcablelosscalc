@@ -26,6 +26,7 @@ private slots:
     void onCurrentFreqSpinBoxChanged(double value);
 
 private:
+    void loadCables();
     void setupFrequencyControls();
 
     Ui::MainWindow *ui;
