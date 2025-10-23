@@ -318,7 +318,7 @@ void QtCoaxCableLossCalcManager::onAddCableClicked()
             updateGrid();
             updateAttenuations();
         }
-    (m_activeCableWidgets.count()==0)?m_plot->legend->setVisible(false):m_plot->legend->setVisible(true);
+    m_plot->legend->setVisible(m_activeCableWidgets.count() > 0);
     m_plot->replot();
     if(!m_allowCableDupes && m_silentCableDupes) onCurrentCableIndexChanged(0);
 }
