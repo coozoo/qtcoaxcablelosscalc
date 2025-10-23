@@ -26,8 +26,6 @@ CableModel::~CableModel()
     delete static_cast<tk::spline*>(m_spline);
 }
 
-
-
 double CableModel::getAttenuationPer100m(double frequencyMHz) const
 {
     if (!m_splineValid)

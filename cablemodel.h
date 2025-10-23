@@ -1,5 +1,4 @@
-#ifndef CABLEMODEL_H
-#define CABLEMODEL_H
+#pragma once
 
 #include <QObject>
 #include <QJsonObject>
@@ -37,5 +36,3 @@ private:
     double m_maxFrequency = 0.0;
     double m_minFrequency = 0.0;
 };
-
-#endif // CABLEMODEL_H

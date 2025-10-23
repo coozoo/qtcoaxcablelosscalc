@@ -1,13 +1,15 @@
-#ifndef QTCOAXCABLELOSSCALCMANAGER_H
-#define QTCOAXCABLELOSSCALCMANAGER_H
+#pragma once
 
 #include <QWidget>
 #include <QList>
 #include <QMap>
-#include "qcustomplot.h"
 
 class CableModel;
 class CableWidget;
+class QCPGraph;
+class QCPItemStraightLine;
+class QCPItemTracer;
+class QCustomPlot;
 class QLineEdit;
 class QComboBox;
 class QPushButton;
@@ -16,6 +18,7 @@ class QScrollArea;
 class QLabel;
 class QGridLayout;
 class QResizeEvent;
+class QToolButton;
 
 class QtCoaxCableLossCalcManager : public QWidget
 {
@@ -30,10 +33,7 @@ public slots:
     void setGlobalLength(double lengthM);
     void setPlotRange(double lower, double upper);
     void setIndividualLengthAllowed(bool allowed);
-    void setAllowCableDupes(bool allowed)
-    {
-        m_allowCableDupes=allowed;
-    }
+    void setAllowCableDupes(bool allowed) { m_allowCableDupes = allowed; }
     void setSilentCableDupes(bool silent);
 
 signals:
@@ -88,5 +88,3 @@ private:
                               QColor(145,0,140),   QColor(205,125,0),   QColor(0,0,0)};
     int m_nextColorIndex = 0;
 };
-
-#endif // QTCOAXCABLELOSSCALCMANAGER_H

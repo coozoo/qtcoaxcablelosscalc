@@ -1,6 +1,8 @@
 #include "qtcoaxcablelosscalcmanager.h"
 #include "cablemodel.h"
 #include "cablewidget.h"
+#include "3rdparty/qcustomplot/qcustomplot.h"
+
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QGridLayout>
@@ -167,7 +169,8 @@ void QtCoaxCableLossCalcManager::resizeEvent(QResizeEvent *event)
 void QtCoaxCableLossCalcManager::setSilentCableDupes(bool silent)
 {
     m_silentCableDupes=silent;
-    if(!m_allowCableDupes && m_silentCableDupes) connect(m_cableComboBox,&QComboBox::currentIndexChanged,this,&QtCoaxCableLossCalcManager::onCurrentCableIndexChanged);
+    if(!m_allowCableDupes && m_silentCableDupes)
+        connect(m_cableComboBox, &QComboBox::currentIndexChanged, this, &QtCoaxCableLossCalcManager::onCurrentCableIndexChanged);
 }
 
 void QtCoaxCableLossCalcManager::setPlotRange(double lower, double upper)
@@ -306,8 +309,6 @@ void QtCoaxCableLossCalcManager::onAddCableClicked()
             CableWidget *widget = new CableWidget(model);
 
             widget->setLengthEditable(m_individualLengthAllowed);
-
-
             widget->setLength(m_globalLength);
 
             widget->setFrequency(m_frequencyLine->point1->key());
@@ -342,7 +343,7 @@ void QtCoaxCableLossCalcManager::onDeleteMarkedClicked()
             removeCableFromPlot(widget);
             widget->deleteLater();
         }
-    (m_activeCableWidgets.count()==0)?m_plot->legend->setVisible(false):m_plot->legend->setVisible(true);
+    m_plot->legend->setVisible(m_activeCableWidgets.count() > 0);
     m_plot->replot();
     updateGrid();
     updateAttenuations();
