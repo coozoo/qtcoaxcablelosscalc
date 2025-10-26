@@ -1,7 +1,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "qtcoaxcablelosscalcmanager.h"
+#include <QFileInfo>
 #include <QVBoxLayout>
+#include <QStandardPaths>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -16,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->cableManager_groupBox->setLayout(new QVBoxLayout());
     ui->cableManager_groupBox->layout()->addWidget(m_manager);
 
+    loadCables();
     setupFrequencyControls();
     setWindowTitle("Coaxial Cable Loss Calculator");
 }
@@ -23,6 +26,28 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::loadCables()
+{
+    QString configPath;
+#ifdef Q_OS_WIN
+    configPath = qApp->applicationDirPath();
+#endif
+#if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+    configPath = QStandardPaths::standardLocations(QStandardPaths::ConfigLocation)[0] + "/" + qAppName();
+#endif
+    configPath += "/cables.json";
+
+    if (QFileInfo::exists(configPath))
+        qDebug() << "Loading cables from:" << configPath;
+    else
+    {
+        // from resources
+        configPath = ":/cables.json";
+        qDebug() << "Loading default cables:" << configPath;
+    }
+    m_manager->loadCablesFromJson(configPath);
 }
 
 void MainWindow::setupFrequencyControls()

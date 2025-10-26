@@ -1,5 +1,4 @@
-#ifndef CABLEWIDGET_H
-#define CABLEWIDGET_H
+#pragma once
 
 #include <QFrame>
 #include "cablemodel.h"
@@ -55,5 +54,3 @@ private:
     QDoubleSpinBox *m_lengthSpinBox;
     QTableWidgetItem *m_lossValueItem;
 };
-
-#endif // CABLEWIDGET_H
